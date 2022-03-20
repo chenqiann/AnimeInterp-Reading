@@ -14,7 +14,7 @@ Different from natural video interpolation, animation video has unique character
 
 Along with original challenges of natural video interpolation, like occlussion handling, video interpolation in animations remains a challenging task.
 
-This paper propsed an effective framework, AnimeInterp[[8]](#references), with two dedicated modules, [SGM](#segment-guided-matching) and [RFR](#recurrent-flow-refinement-network), in a coarse-to-fine manner.
+This paper propsed an effective framework, AnimeInterp[[8]](#references), with two dedicated modules, [SGM](#-segment-guided-matching) and [RFR](#-recurrent-flow-refinement-network), in a coarse-to-fine manner.
 
 ---------------
 ### Contributions ###
