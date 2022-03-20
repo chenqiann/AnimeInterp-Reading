@@ -44,7 +44,7 @@ Specific annotations are in a .json file, include:
 - behavior: "speaking", "walking", "eating", "sporting",
 "fetching", "others".
 
-#### -Segment-Guided Matching (SGM Mudule) ####
+#### -Segment-Guided Matching (SGM Module) ####
 
 ![sgm](https://github.com/chenqiann/AnimeInterp-Reading/blob/main/figs/sgm_module.png)
 
