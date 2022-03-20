@@ -1,4 +1,5 @@
-__pycache__/
+.idea/*
+_pycache__/
 */__pycache__/
 *.pyc
 datasets/*
@@ -7,7 +8,7 @@ models/rfr_model/models/
 models/rfr_model/models/*
 *.zip
 *.DS_Store
-.idea/*
+
 
 
 
