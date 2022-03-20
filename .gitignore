@@ -6,7 +6,8 @@ datasets/*
 models/rfr_model/models/
 models/rfr_model/models/*
 *.zip
-
+*.DS_Store
+.idea/*
 
 
 
