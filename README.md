@@ -1,71 +1,143 @@
-# AnimeInterp
+# Paper and Codes Reading #
+This repositry is a clone of the official implementations of the paper 'Deep Animation Video Interpolation in the Wild'(CVPR21). The sourse [README.md](https://github.com/lisiyao21/AnimeInterp#readme) file please see [AnimeInterp](https://github.com/lisiyao21/AnimeInterp) repositry.
 
-This is the code for paper "Deep Animation Video Interpolation in the Wild" (CVPR21). 
+I added some code annotations in Chinese and there were something inaccurate in codes which will be illustrated later.
 
-[[Paper]](https://arxiv.org/abs/2104.02495) | [[Data]](https://drive.google.com/file/d/1XBDuiEgdd6c0S4OXLF4QvgSn_XNPwc-g/view) | [[Video Demo]](https://www.youtube.com/watch?v=2bbujT-ZXr8)
+## About Paper ##
 
-> Abstract: In the animation industry, cartoon videos are usually produced at low frame rate since hand drawing of such frames is costly and time-consuming. Therefore, it is desirable to develop computational models that can automatically interpolate the in-between animation frames. However, existing video interpolation methods fail to produce satisfying results on animation data. Compared to natural videos, animation videos possess two unique characteristics that make frame interpolation difficult: 1) cartoons comprise lines and smooth color pieces. The smooth areas lack textures and make it difficult to estimate accurate motions on animation videos. 2) cartoons express stories via exaggeration. Some of the motions are non-linear and extremely large. In this work, we formally define and study the animation video interpolation problem for the first time. To address the aforementioned challenges, we propose an effective framework, AnimeInterp, with two dedicated modules in a coarse-to-fine manner. Specifically, 1) Segment-Guided Matching resolves the "lack of textures" challenge by exploiting global matching among color pieces that are piece-wise coherent. 2) Recurrent Flow Refinement resolves the "non-linear and extremely large motion" challenge by recurrent predictions using a transformer-like architecture. To facilitate comprehensive training and evaluations, we build a large-scale animation triplet dataset, ATD-12K, which comprises 12,000 triplets with rich annotations. Extensive experiments demonstrate that our approach outperforms existing state-of-the-art interpolation methods for animation videos. Notably, AnimeInterp shows favorable perceptual quality and robustness for animation scenarios in the wild. 
+### Introduction ###
 
-![image](https://github.com/lisiyao21/AnimeInterp/blob/main/figs/sample0.png)
+Different from natural video interpolation, animation video has unique characteristics:
 
-## Overview
+- Texture Insufficiency: Cartoons comprise lines and smooth color pieces. The smooth areas lack textures and make it difficult to estimate accurate motions on animation videos.
+- Large Motions: Cartoons express stories via exaggeration. Some of the motions are non-linear and extremely large.
 
-AnimeInterp consists three parts ('segment-guided mathing', 'recurent flow refine' and 'warping & synthesis') to generate the in-between anime frame given two inputs.
+Along with original challenges of natural video interpolation, like occlussion handling, video interpolation in animations remains a challenging task.
 
-![image](https://github.com/lisiyao21/AnimeInterp/blob/main/figs/pipeline.png)
+This paper propsed an effective framework, AnimeInterp[[8]](#references), with two dedicated modules, [SGM](#segment-guided-matching) and [RFR](#recurrent-flow-refinement-network), in a coarse-to-fine manner.
 
-### Environment
-* 0.4 <= pytorch <= 1.1
+---------------
+### Contributions ###
 
-If you have to use higher version, please set argument "align_corner" as True for any "grid_sample" function that appears in this project.
+- Formally define and study the animation video interpolation problem for the first time.
+- Propose an effective animation interpolation framework named AnimeInterp with two dedicated modules to resolve the “lack of textures” and “non-linear and extremely large motion” challenges, which outperforms existing state-of-the-art methods both quantitatively and qualitatively.
+- Build a large-scale cartoon triplet dataset called ATD-12K with large content diversity representing many types of animations to test animation video interpolation methods.
 
-### Data
+---------------
+### Limits ###
+- Not mentioned 
 
-To use the data, please first download it from [link](https://drive.google.com/file/d/1XBDuiEgdd6c0S4OXLF4QvgSn_XNPwc-g/view) and uncompress it into this project directory. When uncompressed, the data will look like
+---------------
+### Framework with Dataset and Correspondent Codes ###
+###### Framework ######
 
-        datasets 
-             |_train_10k 
-             |        |_ train_triplet0 
-             |        |             |_ frame1.jpg 
-             |        |             |_ frame2.jpg
-             |        |             |_ frame3.jpg
-             |        |
-             |        ...
-             |
-             |_train_10k 
-             |        |_ test_triplet0 
-             |        |             |_ frame1.png 
-             |        |             |_ frame2.png
-             |        |             |_ frame3.png
-             |        |
-             |        ...
-             |
-             |_test_2k_ann 
-                      |_ test_triplet0 
-                                    |_ triplet0.json   
+![framework](https://github.com/chenqiann/AnimeInterp-Reading/blob/main/figs/framework.png)
+
+#### -Dataset ####
+[ATD-12K](https://drive.google.com/file/d/1XBDuiEgdd6c0S4OXLF4QvgSn_XNPwc-g/view) Dataset[[8]](#references) with triplets of animation frames from videos in the wild. It has been splited into 10k training samples and 2k test samples. 
+
+Specific annotations are in a .json file, include:
+
+- difficulty levels: 0 : “Easy”, 1 : “Medium”, 2 :  “Hard”.
+- motion RoI(Region of Interest): x, y, width, height.
+- general\_motion\_type: "translation", "rotation", "scaling", "deformation".
+- behavior: "speaking", "walking", "eating", "sporting",
+"fetching", "others".
+
+#### -Segment-Guided Matching ####
+
+![sgm](https://github.com/chenqiann/AnimeInterp-Reading/blob/main/figs/sgm_module.png)
+
+input: $I_{0}$, $I_{1}$ - input images
+
+output: $f_{0\rightarrow1}$, $f_{1\rightarrow0}$ - coarse optical flow
 
 
-We also provid pre-computed SGM flows in the datasets folder.
+**1. Color Piece Segmentation**
 
-### Code
+Laplacian filter to extract contours of animation frames[[1]](#references).
+[**./gen\_labelmap.py/dline\_of**].
 
-To run the reference code, first download the pre-trained weights from [link](https://www.dropbox.com/s/oc8juclx1775qib/anime_interp_full.ckpt?dl=0)(Dropbox) or [link](https://www.jianguoyun.com/p/DVKXlwIQ6OS4CRixxPQD)(坚果云) and move it to the checkpoints folder. Then, run
+ “Trapped-
+ball” algorithm to fill the contours then generate color pieces[[1]](#references). [**./linefiller & gen\_labelmap.py/trapped\_ball\_processed**]
 
-``` 
-python test_anime_sequence_one_by_one.py configs/config_test_w_sgm.py 
-```
+A segmentation map where pixels
+of each color piece is labeled by an identity number. [**./linefiller/trappedball\_fill.py/build\_fill\_map**]
 
-The interpolated results will be recorded into the where the "store_path" argument indicates in the config file.
+**2. Feature Collection**
 
-### Citation
+Extract features of relu1\_2, relu2\_2, relu3\_4 and relu4\_4 layers from pretrained VGG-19 model[[2]](#references). [**./my\_models.py/create\_VGGFeatNet**]
 
-    @inproceedings{siyao2021anime,
-	    title={Deep Animation Video Interpolation in the Wild},
-	    author={Siyao, Li and Zhao, Shiyu and Yu, Weijiang and Sun, Wenxiu and Metaxas, Dimitris and Loy, Chen Change and Liu, Ziwei },
-	    booktitle={CVPR},
-	    year={2021}
-    }
+Assemble the features belonging to one segment by
+the super-pixel pooling[[3]](#references). [**gen\_sgm.py/superpixel\_pooling**]
 
-### License
+**3. Color Piece Matching**
 
-Our code is released under MIT License.
+Compute an affinity metric $\mathcal{A}$ [**./gen\_sgm.py** line 553], the distance penalty $\mathcal{L}\_{dist}$ [**./gen\_sgm.py** line 559], the size penalty $\mathcal{L}\_{size}$ [**./gen\_sgm.py** line 564], the matching map $\mathcal{M}$ [**./gen\_sgm.py/mutual\_matching**].
+
+
+**4. Flow Generation**
+
+Compute flow f [**./gen\_sgm.py/get\_guidance\_flow**]
+
+
+#### -Recurrent Flow Refinement Network ####
+
+![rfr](https://github.com/chenqiann/AnimeInterp-Reading/blob/main/figs/rfr_module.png)
+
+input: $I_{0}$, $I_{1}$, $f_{0\rightarrow1}$, $f_{1\rightarrow0}$ - input images and coarse optical flow computed by SGM module
+
+output: $f^{`}_{0\rightarrow1}$, $f^{`}_{1\rightarrow0}$ - fine flow
+
+Inspired by [[4]](#references), design a transformer-like architecture to recurrently refine the piece-wise flow.
+
+- 3-layer Conv [**./rfr\_new.py/ErrorAttention**]
+- Feature Net [**./extractor.py/BasicEncoder**]
+- ConvGRU[[5]](#references) [**./update.py/SepConvGRU**]
+- Correlation [**./corr.py/CorrBlock**]
+
+
+#### -Frame Warping and Synthesis ####
+
+input: $I_{0}$, $I_{1}$, $f^{'}_{0\rightarrow1}$, $f^{'}_{1\rightarrow0}$ - input images and fine flow computed by RFR module
+
+output: $\hat{I}_{1/2}$ - interpolated image
+
+Generate the intermediate frame by using the splatting and synthesis strategy of Soft-Splat[[6]](#references).
+
+All features and input frames are softmax splatted via forward warping. [**./softsplat.py/ModuleSoftsplat**]
+
+All warped frames and features are fed into a GridNet[[7]](#references) to synthesize the target frame. [**./GridNet.py/GridNet**]
+
+
+## Inaccurate Parts ##
+
+#### test\_anime\_sequence\_one\_by\_one.py ####
+about line 38
+
+    # source
+	revmean = [-x for x in config.mean]
+
+	# suggest to change as
+	revmean = [-x for x in config.mean]
+	revmean = [revmean/std for std in (fill variable of Std here)]
+
+Set normalize\_1: (X - Mean) / Std = Y. To reverse this normalization by another normalize\_2, it should be: (Y - (-Mean/Std)) / (1/Std) = X. So the 'revmean' above should be adjusted if Std not equals 1.
+
+### References ###
+
+[1] Zhang, Song-Hai, et al. "Vectorizing cartoon animations." IEEE Transactions on Visualization and Computer Graphics 15.4 (2009): 618-629.
+
+[2] Simonyan, Karen, and Andrew Zisserman. ["Very deep convolutional networks for large-scale image recognition."](https://arxiv.org/pdf/1409.1556.pdf%E3%80%82) arXiv preprint arXiv:1409.1556 (2014).
+
+[3] Liu, Fayao, et al. ["Learning depth from single monocular images using deep convolutional neural fields."](https://arxiv.org/pdf/1502.07411) IEEE transactions on pattern analysis and machine intelligence 38.10 (2015): 2024-2039.
+
+[4] Teed, Zachary, and Jia Deng. ["Raft: Recurrent all-pairs field transforms for optical flow."](https://arxiv.org/pdf/2003.12039) European conference on computer vision. Springer, Cham, 2020.
+
+[5] Cho, Kyunghyun, et al. ["On the properties of neural machine translation: Encoder-decoder approaches."](https://arxiv.org/pdf/1409.1259.pdf?ref=https://githubhelp.com) arXiv preprint arXiv:1409.1259 (2014).
+
+[6] Niklaus, Simon, and Feng Liu. ["Softmax splatting for video frame interpolation."](http://openaccess.thecvf.com/content_CVPR_2020/papers/Niklaus_Softmax_Splatting_for_Video_Frame_Interpolation_CVPR_2020_paper.pdf) Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition. 2020.
+
+[7] Fourure, Damien, et al. ["Residual conv-deconv grid network for semantic segmentation."](https://arxiv.org/pdf/1707.07958.pdf?ref=https://githubhelp.com) arXiv preprint arXiv:1707.07958 (2017).
+
+[8] Siyao, Li, et al. ["Deep animation video interpolation in the wild."](http://openaccess.thecvf.com/content/CVPR2021/papers/Siyao_Deep_Animation_Video_Interpolation_in_the_Wild_CVPR_2021_paper.pdf) Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition. 2021.
