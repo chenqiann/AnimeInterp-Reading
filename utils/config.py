@@ -3,7 +3,7 @@ import sys
 from argparse import ArgumentParser
 from collections import Iterable
 from importlib import import_module
-from easydict import EasyDict as edict
+from easydict import EasyDict as edict # 可以以属性的方式访问字典的值
 
 
 def add_args(parser, cfg, prefix=''):
@@ -29,9 +29,9 @@ class Config(object):
     @staticmethod
     def from_file(filename):
         if filename.endswith('.py'):
-            sys.path.append(osp.dirname(filename))
-            module_name = osp.basename(filename).rstrip('.py')
-            cfg = import_module(module_name)
+            sys.path.append(osp.dirname(filename))  # 把文件目录加入环境变量，指定用于模块搜索路径的字符串列表
+            module_name = osp.basename(filename).rstrip('.py')  # config文件名（不带扩展）
+            cfg = import_module(module_name)  # 已经将文件目录加入模块搜索路径列表中
             config_dict = edict({
                 name: value
                 for name, value in cfg.__dict__.items()
@@ -58,7 +58,7 @@ class Config(object):
         self._default_dict = {}
         self.filename = filename
         if filename:
-            with open(filename, 'r') as f:
+            with open(filename, 'r', encoding='utf-8') as f:
                 self._text = f.read()
 
     def __getattr__(self, key):

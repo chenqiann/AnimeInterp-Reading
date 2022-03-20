@@ -9,8 +9,8 @@ import torch
 import torch.nn.functional as F
 import torchvision.transforms as transforms
 
-from linefiller.thinning import thinning
-from linefiller.trappedball_fill import trapped_ball_fill_multi, flood_fill_multi, mark_fill, build_fill_map, merge_fill, \
+from .linefiller.thinning import thinning
+from .linefiller.trappedball_fill import trapped_ball_fill_multi, flood_fill_multi, mark_fill, build_fill_map, merge_fill, \
     show_fill_map, my_merge_fill
 
 # for super pixelpooling
@@ -18,9 +18,9 @@ from torch_scatter import scatter_mean
 from torch_scatter import scatter_add
 
 import softsplat
-from forward_warp2 import ForwardWarp
-from my_models import create_VGGFeatNet
-from vis_flow import flow_to_color
+from .forward_warp2 import ForwardWarp
+from .my_models import create_VGGFeatNet
+from .vis_flow import flow_to_color
 
 
 
@@ -90,7 +90,7 @@ def trapped_ball_processed(binary, in_image=None, do_merge=True):
             fillmap = my_merge_fill(in_image, fillmap)
     fillmap = thinning(fillmap)
     
-    return fillmap
+    return fillmap  # a segmentation map
 
 
 def superpixel_count(label_map):

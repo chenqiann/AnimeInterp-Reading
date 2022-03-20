@@ -39,13 +39,13 @@ class FeatureExtractor(nn.Module):
 
         return x1, x2, x3
 
-
+# RFR Network + Splatting Warping + GridNet Systhesis（gpu版）
 class AnimeInterp(nn.Module):
     """The quadratic model"""
     def __init__(self, path='models/raft_model/models/rfr_sintel_latest.pth-no-zip', args=None):
         super(AnimeInterp, self).__init__()
 
-        args = argparse.Namespace()
+        args = argparse.Namespace() # RFR模块的参数
         args.small = False
         args.mixed_precision = False
         # args.requires_sq_flow = False

@@ -233,7 +233,7 @@ def cupy_kernel(strFunction, objVariables):
 	return strKernel
 # end
 
-@cupy.util.memoize(for_each_device=True)
+@cupy.memoize(for_each_device=True)
 def cupy_launch(strFunction, strKernel):
 	return cupy.cuda.compile_with_cache(strKernel).get_function(strFunction)
 # end
@@ -359,7 +359,7 @@ def FunctionSoftsplat(tenInput, tenFlow, tenMetric, strType):
 
 	return tenOutput
 # end
-
+# Splatting Warping
 class ModuleSoftsplat(torch.nn.Module):
 	def __init__(self, strType):
 		super(ModuleSoftsplat, self).__init__()

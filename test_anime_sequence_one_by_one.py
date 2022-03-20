@@ -35,10 +35,10 @@ def validate(config):
     normalize2 = TF.Normalize([0, 0, 0], config.std)
     trans = TF.Compose([TF.ToTensor(), normalize1, normalize2, ])
 
-    revmean = [-x for x in config.mean]
+    revmean = [-x for x in config.mean]  # 因为normalize1的标准差是1，这里可以不用除以标准差
     revstd = [1.0 / x for x in config.std]
-    revnormalize1 = TF.Normalize([0.0, 0.0, 0.0], revstd)
-    revnormalize2 = TF.Normalize(revmean, [1.0, 1.0, 1.0])
+    revnormalize1 = TF.Normalize([0.0, 0.0, 0.0], revstd)  # normalize2的反归一化
+    revnormalize2 = TF.Normalize(revmean, [1.0, 1.0, 1.0])  # normalize1的反归一化
     revNormalize = TF.Compose([revnormalize1, revnormalize2])
 
     revtrans = TF.Compose([revnormalize1, revnormalize2, TF.ToPILImage()])
@@ -49,16 +49,16 @@ def validate(config):
     to_img = TF.ToPILImage()
  
     print(testset)
-    sys.stdout.flush()
+    sys.stdout.flush()  # 刷新输出缓冲区，立即打印（linux需要，windows不需要）
 
     # prepare model
     model = getattr(models, config.model)(config.pwc_path).cuda()
-    model = nn.DataParallel(model)
+    model = nn.DataParallel(model)  # 多卡并行训练
     retImg = []
 
     # load weights
-    dict1 = torch.load(config.checkpoint)
-    model.load_state_dict(dict1['model_state_dict'], strict=False)
+    dict1 = torch.load(config.checkpoint)  # 加载模型参数
+    model.load_state_dict(dict1['model_state_dict'], strict=False)  # strict: 新构建网络中与训练权重中匹配层的键值就进行使用，没有的就默认初始化
 
     # prepare others
     store_path = config.store_path
@@ -95,7 +95,7 @@ def validate(config):
         for validationIndex, validationData in enumerate(validationloader, 0):
             print('Testing {}/{}-th group...'.format(validationIndex, len(testset)))
             sys.stdout.flush()
-            sample, flow,  index, folder = validationData
+            sample, flow,  index, folder = validationData  # sample:Tensor, flow:Tensor, index:String, folder:String
 
             frame0 = None
             frame1 = sample[0]
@@ -107,10 +107,10 @@ def validate(config):
             # initial SGM flow
             F12i, F21i  = flow
 
-            F12i = F12i.float().cuda() 
+            F12i = F12i.float().cuda()
             F21i = F21i.float().cuda()
 
-            ITs = [sample[tt] for tt in range(1, 2)]
+            ITs = [sample[tt] for tt in range(1, 2)]  # 中间帧ground truth
             I1 = frame1.cuda()
             I2 = frame2.cuda()
             
@@ -122,9 +122,9 @@ def validate(config):
             revtrans(I2.cpu()[0]).save(store_path + '/' + folder[-1][0] + '/' +  index[-1][0] + '.jpg')
             for tt in range(config.inter_frames):
                 x = config.inter_frames
-                t = 1.0/(x+1) * (tt + 1)
+                t = 1.0/(x+1) * (tt + 1)  # 例如插4帧，第一帧t=1/5，第四帧t=4/5。0，1分别表示I1，I2
                 
-                outputs = model(I1, I2, F12i, F21i, t)
+                outputs = model(I1, I2, F12i, F21i, t)  # 模型输出：It_warp, F12, F21, F12in, F21in
 
                 It_warp = outputs[0]
 
@@ -134,7 +134,7 @@ def validate(config):
                 save_flow_to_img(outputs[2].cpu(), store_path + '/' + folder[1][0] + '/' + index[1][0] + '_F21')
 
                 estimated = revNormalize(It_warp[0].cpu()).clamp(0.0, 1.0).numpy().transpose(1, 2, 0)
-                gt = revNormalize(ITs[tt][0]).clamp(0.0, 1.0).numpy().transpose(1, 2, 0) 
+                gt = revNormalize(ITs[tt][0]).clamp(0.0, 1.0).numpy().transpose(1, 2, 0)  # 若config.inter_frames>1，越界
                 
                 labelFilePath = os.path.join(config.test_annotation_root,
                                             folder[1][0], '%s.json'%folder[1][0])
@@ -205,7 +205,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument('config')
     args = parser.parse_args()
-    config = Config.from_file(args.config)
+    config = Config.from_file(args.config)  # staticmethod
 
 
     if not os.path.exists(config.store_path):
@@ -219,10 +219,10 @@ if __name__ == "__main__":
 
     for ii in range(config.inter_frames):
         print('PSNR of validation frame' + str(ii+1) + ' is {}'.format(np.mean(ssims[:, ii])))
-            
+
     for ii in range(config.inter_frames):
         print('PSNR of validation frame' + str(ii+1) + ' is {}'.format(np.mean(ies[:, ii])))
-            
+
     print('Whole PSNR is {}'.format(psnr) )
     print('Whole SSIM is {}'.format(ssim) )
 

@@ -12,17 +12,17 @@ import cv2
 import torch.nn.functional as F
 
 def _make_dataset(dir, dirf):
-    framesPath = []
-    flowPath = []
+    framesPath = []  # subfolder_num x 3
+    flowPath = []  # subfolder_num x 2
 
-    framesIndex = []
-    framesFolder = []
+    framesIndex = []  # subfolder_num x 3，img_name
+    framesFolder = []  # subfolder_num x 3，3个值一样
     # Find and loop over all the clips in root `dir`.
     for index, folder in enumerate(os.listdir(dir)):
         clipsFolderPath = os.path.join(dir, folder)
         flowFolderPath = os.path.join(dirf, folder)
         # Skip items which are not folders.
-        if not (os.path.isdir(clipsFolderPath)):
+        if not (os.path.isdir(clipsFolderPath)):  # 判断是否为目录
             continue
         framesPath.append([])
         flowPath.append([])
@@ -38,7 +38,7 @@ def _make_dataset(dir, dirf):
         for image in sorted(os.listdir(clipsFolderPath)):
             # Add path to list.
             framesPath[index].append(os.path.join(clipsFolderPath, image))
-            framesIndex[index].append(image[:-4])
+            framesIndex[index].append(image[:-4])  # img_name
             framesFolder[index].append(folder)
         #framesPath[index].append(os.path.join(clipsFolderPath, 'frame0.jpg'))
         # framesPath[index].append(os.path.join(clipsFolderPath, 'frame1.jpg'))
@@ -116,7 +116,7 @@ class AniTripletWithSGMFlowTest(data.Dataset):
         self.randomCropSize = randomCropSize
         self.cropX0         = resizeSize[0] - randomCropSize[0]
         self.cropY0         = resizeSize[1] - randomCropSize[1]
-        self.root           = root
+        self.root           = root  # testset_root
         self.transform      = transform
         self.train          = train
         self.resizeSize     = resizeSize
