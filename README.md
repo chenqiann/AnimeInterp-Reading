@@ -85,9 +85,9 @@ Compute flow f [**./gen\_sgm.py/get\_guidance\_flow**]
 
 ![rfr](https://github.com/chenqiann/AnimeInterp-Reading/blob/main/figs/rfr_module.png)
 
-input: $I_{0}$, $I_{1}$, $f_{0\rightarrow1}$, $f_{1\rightarrow0}$ - input images and coarse optical flow computed by SGM module
+input: $I_{0}$, $I_{1}$, $f_{0\\rightarrow1}$, $f_{1\\rightarrow0}$ - input images and coarse optical flow computed by SGM module
 
-output: $f^{‘}_{0\rightarrow1}$, $f^{’}_{1\rightarrow0}$ - fine flow
+output: $f^{‘}_{0\\rightarrow1}$, $f^{’}_{1\\rightarrow0}$ - fine flow
 
 Inspired by [[4]](#references), design a transformer-like architecture to recurrently refine the piece-wise flow.
 
@@ -99,9 +99,9 @@ Inspired by [[4]](#references), design a transformer-like architecture to recurr
 
 #### -Frame Warping and Synthesis ####
 
-input: $I_{0}$, $I_{1}$, $f^{'}_{0\rightarrow1}$, $f^{'}_{1\rightarrow0}$ - input images and fine flow computed by RFR module
+input: $I_{0}$, $I_{1}$, $f^{'}_{0\\rightarrow1}$, $f^{'}_{1\\rightarrow0}$ - input images and fine flow computed by RFR module
 
-output: $\hat{I}_{1/2}$ - interpolated image
+output: $\\hat{I}_{1/2}$ - interpolated image
 
 Generate the intermediate frame by using the splatting and synthesis strategy of Soft-Splat[[6]](#references).
 
