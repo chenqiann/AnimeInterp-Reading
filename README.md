@@ -52,6 +52,8 @@ input: $I_{0}$, $I_{1}$ - input images
 
 output: $f_{0\rightarrow1}$, $f_{1\rightarrow0}$ - coarse optical flow
 
+In this part, '.' refer to directry models/sgm\_model.
+
 
 **1. Color Piece Segmentation**
 
@@ -89,6 +91,8 @@ input: $I_{0}$, $I_{1}$, $f_{0\rightarrow1}$, $f_{1\rightarrow0}$ - input images
 
 output: $f^{'}\_{0\rightarrow1}$, $f^{’}\_{1\rightarrow0}$ - fine flow
 
+In this part, '.' refer to directry models/rfr\_model.
+
 Inspired by [[4]](#references), design a transformer-like architecture to recurrently refine the piece-wise flow.
 
 - 3-layer Conv [**./rfr\_new.py/ErrorAttention**]
@@ -102,6 +106,8 @@ Inspired by [[4]](#references), design a transformer-like architecture to recurr
 input: $I_{0}$, $I_{1}$, $f^{'}\_{0\rightarrow1}$, $f^{'}\_{1\rightarrow0}$ - input images and fine flow computed by RFR module
 
 output: $\hat{I}_{1/2}$ - interpolated image
+
+In this part, '.' refer to directry models.
 
 Generate the intermediate frame by using the splatting and synthesis strategy of Soft-Splat[[6]](#references).
 
