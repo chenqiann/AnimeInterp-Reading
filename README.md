@@ -14,7 +14,7 @@ Different from natural video interpolation, animation video has unique character
 
 Along with original challenges of natural video interpolation, like occlussion handling, video interpolation in animations remains a challenging task.
 
-This paper propsed an effective framework, AnimeInterp[[8]](#references), with two dedicated modules, [SGM](#-segment-guided-matching) and [RFR](#-recurrent-flow-refinement-network), in a coarse-to-fine manner.
+This paper propsed an effective framework, AnimeInterp[[8]](#references), with two dedicated modules, [SGM](#-segment-guided-matching-sgm-module) and [RFR](#-recurrent-flow-refinement-network-rfr-module), in a coarse-to-fine manner.
 
 ---------------
 ### Contributions ###
@@ -44,7 +44,7 @@ Specific annotations are in a .json file, include:
 - behavior: "speaking", "walking", "eating", "sporting",
 "fetching", "others".
 
-#### -Segment-Guided Matching ####
+#### -Segment-Guided Matching (SGM Mudule) ####
 
 ![sgm](https://github.com/chenqiann/AnimeInterp-Reading/blob/main/figs/sgm_module.png)
 
@@ -81,7 +81,7 @@ Compute an affinity metric $\mathcal{A}$ [**./gen\_sgm.py** line 553], the dista
 Compute flow f [**./gen\_sgm.py/get\_guidance\_flow**]
 
 
-#### -Recurrent Flow Refinement Network ####
+#### -Recurrent Flow Refinement Network (RFR Module) ####
 
 <img src="https://github.com/chenqiann/AnimeInterp-Reading/blob/main/figs/rfr_module.png" alt="rfr" width="311" height="391" align="bottom" />
 
