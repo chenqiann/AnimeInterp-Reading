@@ -83,6 +83,7 @@ Compute flow f [**./gen\_sgm.py/get\_guidance\_flow**]
 
 #### -Recurrent Flow Refinement Network ####
 
+<img src="https://github.com/chenqiann/AnimeInterp-Reading/blob/main/figs/rfr_module.png" alt="rfr" width="259" height="326" align="bottom" />
 ![rfr](https://github.com/chenqiann/AnimeInterp-Reading/blob/main/figs/rfr_module.png)
 
 input: $I_{0}$, $I_{1}$, $f_{0\rightarrow1}$, $f_{1\rightarrow0}$ - input images and coarse optical flow computed by SGM module
