@@ -1,7 +1,7 @@
 
-testset_root = 'C:/Users/Chen/Downloads/atd_12k/datasets/test_2k_540p'
-test_flow_root = 'C:/Users/Chen/Downloads/atd_12k/datasets/test_2k_pre_calc_sgm_flows'
-test_annotation_root = 'C:/Users/Chen/Downloads/atd_12k/datasets/test_2k_annotations'
+testset_root = 'atd_12k/datasets/test_2k_540p'
+test_flow_root = 'atd_12k/datasets/test_2k_pre_calc_sgm_flows'
+test_annotation_root = 'atd_12k/datasets/test_2k_annotations'
 
 test_size = (960, 540)
 test_crop_size = (960, 540)
