@@ -36,7 +36,7 @@ This paper propsed an effective framework, AnimeInterp[[8]](#references), with t
 #### -Dataset ####
 [ATD-12K](https://drive.google.com/file/d/1XBDuiEgdd6c0S4OXLF4QvgSn_XNPwc-g/view) Dataset[[8]](#references) with triplets of animation frames from videos in the wild. It has been splited into 10k training samples and 2k test samples. 
 
-Specific annotations are in a .json file, include:
+Specific annotations are in .json file, include:
 
 - difficulty levels: 0 : “Easy”, 1 : “Medium”, 2 :  “Hard”.
 - motion RoI(Region of Interest): x, y, width, height.
