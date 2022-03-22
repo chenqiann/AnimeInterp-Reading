@@ -1,5 +1,5 @@
 # Paper and Codes Reading #
-This repositry is a clone of the official implementations of the paper 'Deep Animation Video Interpolation in the Wild'(CVPR21). The sourse [README.md](https://github.com/lisiyao21/AnimeInterp#readme) file please see [AnimeInterp](https://github.com/lisiyao21/AnimeInterp) repositry.
+This repository is a clone of the official implementations of the paper 'Deep Animation Video Interpolation in the Wild'(CVPR21). The sourse [README.md](https://github.com/lisiyao21/AnimeInterp#readme) file please see [AnimeInterp](https://github.com/lisiyao21/AnimeInterp) repository.
 
 I added some code annotations in Chinese and there were something inaccurate in codes which will be illustrated later.
 
