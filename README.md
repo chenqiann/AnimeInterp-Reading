@@ -31,7 +31,7 @@ This paper propsed an effective framework, AnimeInterp[[8]](#references), with t
 ### Framework with Dataset and Correspondent Codes ###
 ###### Framework ######
 
-![framework](https://github.com/chenqiann/AnimeInterp-Reading/blob/main/figs/framework.png)
+![framework](figs/framework.png)
 
 #### -Dataset ####
 [ATD-12K](https://drive.google.com/file/d/1XBDuiEgdd6c0S4OXLF4QvgSn_XNPwc-g/view) Dataset[[8]](#references) with triplets of animation frames from videos in the wild. It has been splited into 10k training samples and 2k test samples. 
@@ -46,7 +46,7 @@ Specific annotations are in .json file, include:
 
 #### -Segment-Guided Matching (SGM Module) ####
 
-![sgm](https://github.com/chenqiann/AnimeInterp-Reading/blob/main/figs/sgm_module.png)
+![sgm](figs/sgm_module.png)
 
 input: $I_{0}$, $I_{1}$ - input images
 
