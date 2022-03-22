@@ -52,35 +52,35 @@ input: $I_{0}$, $I_{1}$ - input images
 
 output: $f_{0\rightarrow1}$, $f_{1\rightarrow0}$ - coarse optical flow
 
-In this part, '.' refer to directry models/sgm\_model.
+In this part, '.' refer to directry `models/sgm_model`.
 
 
 **1. Color Piece Segmentation**
 
 Laplacian filter to extract contours of animation frames[[1]](#references).
-[**./gen\_labelmap.py/dline\_of**].
+`./gen_labelmap.py/dline_of`.
 
  “Trapped-
-ball” algorithm to fill the contours then generate color pieces[[1]](#references). [**./linefiller & gen\_labelmap.py/trapped\_ball\_processed**]
+ball” algorithm to fill the contours then generate color pieces[[1]](#references). `./linefiller` & `gen_labelmap.py/trapped_ball_processed`
 
 A segmentation map where pixels
-of each color piece is labeled by an identity number. [**./linefiller/trappedball\_fill.py/build\_fill\_map**]
+of each color piece is labeled by an identity number. `./linefiller/trappedball_fill.py/build_fill_map`
 
 **2. Feature Collection**
 
-Extract features of relu1\_2, relu2\_2, relu3\_4 and relu4\_4 layers from pretrained VGG-19 model[[2]](#references). [**./my\_models.py/create\_VGGFeatNet**]
+Extract features of relu1\_2, relu2\_2, relu3\_4 and relu4\_4 layers from pretrained VGG-19 model[[2]](#references). `./my_models.py/create_VGGFeatNet`
 
 Assemble the features belonging to one segment by
-the super-pixel pooling[[3]](#references). [**gen\_sgm.py/superpixel\_pooling**]
+the super-pixel pooling[[3]](#references). `gen_sgm.py/superpixel_pooling`
 
 **3. Color Piece Matching**
 
-Compute an affinity metric $\mathcal{A}$ [**./gen\_sgm.py** line 553], the distance penalty $\mathcal{L}\_{dist}$ [**./gen\_sgm.py** line 559], the size penalty $\mathcal{L}\_{size}$ [**./gen\_sgm.py** line 564], the matching map $\mathcal{M}$ [**./gen\_sgm.py/mutual\_matching**].
+Compute an affinity metric $\mathcal{A}$ `./gen_sgm.py line 553`, the distance penalty $\mathcal{L}\_{dist}$ `./gen_sgm.py line 559`, the size penalty $\mathcal{L}\_{size}$ `./gen_sgm.py line 564`, the matching map $\mathcal{M}$ `./gen_sgm.py/mutual_matching`.
 
 
 **4. Flow Generation**
 
-Compute flow f [**./gen\_sgm.py/get\_guidance\_flow**]
+Compute flow f `./gen_sgm.py/get_guidance_flow`
 
 
 #### -Recurrent Flow Refinement Network (RFR Module) ####
@@ -91,14 +91,14 @@ input: $I_{0}$, $I_{1}$, $f_{0\rightarrow1}$, $f_{1\rightarrow0}$ - input images
 
 output: $f^{'}\_{0\rightarrow1}$, $f^{’}\_{1\rightarrow0}$ - fine flow
 
-In this part, '.' refer to directry models/rfr\_model.
+In this part, '.' refer to directry `models/rfr_model`.
 
 Inspired by [[4]](#references), design a transformer-like architecture to recurrently refine the piece-wise flow.
 
-- 3-layer Conv [**./rfr\_new.py/ErrorAttention**]
-- Feature Net [**./extractor.py/BasicEncoder**]
-- ConvGRU[[5]](#references) [**./update.py/SepConvGRU**]
-- Correlation [**./corr.py/CorrBlock**]
+- 3-layer Conv `./rfr_new.py/ErrorAttention`
+- Feature Net `./extractor.py/BasicEncoder`
+- ConvGRU[[5]](#references) `./update.py/SepConvGRU`
+- Correlation `./corr.py/CorrBlock`
 
 
 #### -Frame Warping and Synthesis ####
@@ -107,18 +107,18 @@ input: $I_{0}$, $I_{1}$, $f^{'}\_{0\rightarrow1}$, $f^{'}\_{1\rightarrow0}$ - in
 
 output: $\hat{I}_{1/2}$ - interpolated image
 
-In this part, '.' refer to directry models.
+In this part, '.' refer to directry `models`.
 
 Generate the intermediate frame by using the splatting and synthesis strategy of Soft-Splat[[6]](#references).
 
-All features and input frames are softmax splatted via forward warping. [**./softsplat.py/ModuleSoftsplat**]
+All features and input frames are softmax splatted via forward warping. `./softsplat.py/ModuleSoftsplat`
 
-All warped frames and features are fed into a GridNet[[7]](#references) to synthesize the target frame. [**./GridNet.py/GridNet**]
+All warped frames and features are fed into a GridNet[[7]](#references) to synthesize the target frame. `./GridNet.py/GridNet`
 
 
 ## Inaccurate Parts ##
 
-#### test\_anime\_sequence\_one\_by\_one.py ####
+#### `test_anime_sequence_one_by_one.py` ####
 about line 38
 
     # source
